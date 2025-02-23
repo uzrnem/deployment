@@ -1,0 +1,22 @@
+# fly -t my-target set-pipeline -c hello-world.yml -p hello-world
+
+# fly -t tutorial trigger-job -j hello-world/job-hello-world -w
+
+jobs:
+  - name: job-hello-world
+    public: true
+    plan:
+      - task: hello-world
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: busybox
+              # tag: 3.6.3-jdk-11-slim
+          # image_resource:
+          #   type: docker-image
+          #   source: {repository: busybox}
+          run:
+            path: echo
+            args: [hello world]

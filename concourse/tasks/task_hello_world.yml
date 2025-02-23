@@ -1,0 +1,13 @@
+
+# fly -t my-target execute -c task_hello_world.yml
+
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source: {repository: busybox}
+
+run:
+  path: echo
+  args: [hello world]

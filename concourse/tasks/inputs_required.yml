@@ -1,0 +1,4 @@
+inputs:
+- name: some-important-input
+
+# fly -t my-target execute -c inputs_required.yml

@@ -1,0 +1,60 @@
+#docker-compose -f redis-gui.yml --profile advance up -d / down
+version: "3.7"
+
+services:
+  redisdb:
+    image: redis:6.2.6-alpine3.15
+    container_name: redisdb
+    command: redis-server --requirepass ${REDIS_PASS}
+    volumes:
+      - $HOME/uzrnem/database/redis:/data
+    network_mode: host
+
+  redisgui:
+    image: uzrnem/redisgui:0.4.1
+    container_name: ruigui
+    environment:
+      #'redis://randomusername:password@redis_host:6380'
+      CONFIG_REDIS_URI: redis://:${REDIS_PASS}@localhost:6379
+      PORT: 8001
+    network_mode: host
+
+  rediscache:
+    image: redis:6.2.6-alpine3.15
+    container_name: rediscache
+    hostname: myredis
+    volumes:
+      - $HOME/uzrnem/database/redis:/data
+    ports:
+      - 6379:6379
+    # command: redis-server --requirepass "" #redis
+    networks:
+      - redis
+    profiles:
+      - advance
+
+  cache-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: cache-commander
+    #hostname: redis-commander
+    #restart: always
+    environment:
+    - REDIS_HOSTS=local:myredis:6379
+    ports:
+    - 8001:8081
+    networks:
+      - redis
+    profiles:
+      - advance
+
+networks:
+  redis: # docker-compose-files_redis
+    driver: bridge
+# networks: -- To use above network services in other projects add this networks property
+#  docker-compose-files_redis: -- {{directory_name}}_{{network_name}}
+#    external: true -- are you using external network?
+
+# SADD myset "Hello", SMEMBERS myset, SREM myset "World"
+# HSET myhash field1 "Hello", HKEYS myhash, HGET myhash field1, HDEL myhash field1
+# SET name "Bhagyesh", GET name
+# KEYS *, TYPE tutori: "none", TYPE myhash: "hash", TYPE myset: "set"

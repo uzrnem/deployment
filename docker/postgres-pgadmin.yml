@@ -1,0 +1,51 @@
+#docker-compose -f postgres-pgadmin.yml up -d
+version: "3.7"
+
+#https://github.com/elestio-examples/pgadmin/blob/master/tests/docker-compose.yml
+
+services:
+  postgres:
+    container_name: mypostgres
+    image: postgres:12.20-alpine3.20
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_HOST_AUTH_METHOD: trust
+      #PGDATA: ~/Documents/programming/mypostgres
+    volumes:
+      - $HOME/uzrnem/database/postgres_db:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: mypgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - $HOME/uzrnem/database/pgadmin:/root/.pgadmin
+    ports:
+      - 8001:80
+    networks:
+      - postgres
+
+#  dbui:
+#    image: dbeaver/cloudbeaver:22.0.5
+#    container_name: dbeavercss
+#    ports:
+#      - 8004:8978
+#    networks:
+#      - cassandra #cbadmin
+
+networks:
+  postgres: # docker-compose-files_postgres
+    driver: bridge
+# networks: -- To use above network services in other projects add this networks property
+#  docker-compose-files_postgres: -- {{directory_name}}_{{network_name}}
+#    external: true -- are you using external network?
+
+# docker exec -it postgres psql --dbname=credentials --username=root --command="SHOW config_file"
+# /var/lib/postgresql/data/postgresql.conf

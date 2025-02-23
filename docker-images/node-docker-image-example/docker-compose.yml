@@ -1,0 +1,19 @@
+#docker-compose up
+
+version: '3.7'
+services:
+  nodejs:
+    image: nodenv:1.0.0
+    container_name: restii
+    restart: unless-stopped
+    environment:
+      PORT: 9055
+      EXP_CONFIG_HOST_NAME: db
+    volumes:
+      - $HOME/uzrnem/expense:/var/local
+    ports:
+      - "9050:9050"
+      - "9055:9055"
+    expose:
+      - "9050"
+      - "9055"

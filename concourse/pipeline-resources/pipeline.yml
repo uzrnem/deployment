@@ -1,0 +1,16 @@
+resources:
+- name: resource-tutorial
+  type: git
+  source:
+    uri: https://github.com/starkandwayne/concourse-tutorial.git
+    branch: develop
+
+jobs:
+- name: job-hello-world
+  public: true
+  plan:
+  - get: resource-tutorial
+  - task: hello-world
+    file: ../tasks/task_hello_world.yml
+
+# fly -t my-target set-pipeline -c pipeline.yml -p hello-world
